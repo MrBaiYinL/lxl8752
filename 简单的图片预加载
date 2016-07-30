@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<style type="text/css">
+			/*html {
+				position: relative;
+			}			
+			body,p {
+				margin: 0;
+				padding: 0;
+			}*/
+			html,body{width: 100%;height: 100%;}
+			*{margin: 0;padding: 0;}
+			
+			.bg{width: 100%;height: 100%;}
+			.loading_clock {
+				position: absolute;
+				left: 50%;
+				top: 45%;
+				margin-left: -79px;
+				margin-top: -70px;
+			}
+			
+			.loading_pointer {
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				margin-left: -4.5px;
+				margin-top: -75px;
+				transform-origin: 4.5px bottom;
+				transform: rotate(-140deg);
+			}
+			.firstPrecent {
+				color: white;
+				font-size: 1.8rem;
+				position: absolute;
+				left: 44%;
+				top: 62%;
+			}	
+			canvas {
+				position: absolute;
+				left: 0;
+				top: 0;
+			}		
+		</style>
+	</head>
+	<body>
+		<div class="firstContain">
+			<img src="img/loading_bg.jpg" class="bg"/>
+			<img src="img/loading_clock.png" class="loading_clock" />
+			<img src="img/loading_pointer.png" class="loading_pointer" />
+			<span class="firstPrecent">20%</span>
+			
+		</div>
+		<canvas id="mycanvas" width="" height=""></canvas>
+	</body>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript" src="js/documentReady.js"></script>
+	<script type="text/javascript">
+		var firstContain = document.getElementsByClassName("firstContain")[0];
+		var canvas = document.getElementById("mycanvas");
+		var context = canvas.getContext("2d");
+		
+		canvas.width = deviceReady()[0];
+		canvas.height = deviceReady()[1];
+		firstContain.style.width = deviceReady()[0] + "px";
+		firstContain.style.height = deviceReady()[1] + "px";
+		
+		var srcArray = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '371_1453779101.png', '912_1453779104.png', '1093_1453854255.png', '1536_1453779105.png', '2062_1453779100.png', '2115_1453779103.png', '2214_1453779105.png', '2407_1453779106.png', '2488_1453779103.png', '2740_1453779102.png', '3046_1453779101.png', '3375_1453854403.png', '4169_1453779106.png', '4505_1453779105.png', '4536_1453779106.png', '4575_1453779105.png', '4814_1453854252.png', '5844_1453779104.png', '5865_1453779098.png', '6240_1453779101.png', '6253_1453779102.png', '7030_1453856838.png', '7705_1453779100.png', '8268_1453779103.png', '8279_1453779085.png', '8696_1453854253.png', '9228_1453779104.png', 'commen_close.png', 'layer_info_checked.png', 'layer_info_select.jpg', 'layer_info_submit.png', 'layer_prize.png', 'layer_prize_none.png', 'layer_select_bg.png', 'page1_btn_next.png', 'page1_btn_pic.png', 'page1_btn_pic_active.png', 'page1_btn_prev.png', 'page1_btn_share.png', 'page1_btn_video.png', 'page1_btn_video_active.png', 'page1_k4.png', 'page1_main_bg.jpg', 'page1_nav_active.png', 'page1_tab_bg.jpg', 'page1_top_bg.jpg', 'page1_video_poster.png', 'page2_bg.jpg', 'page2_btn_intro.png', 'page2_btn_start.png', 'page3_bg.jpg', 'page3_btn_start.png', 'page3_choosed_bg.png', 'page5_bg.jpg', 'share.jpg', 'loading_bg.jpg', 'loading_clock.png', 'loading_pointer.png'];
+		
+		var carSrcArray = [];
+		//for循环遍历数组 将图片放入两个数组中
+		for (var i = 1;i < 236;i++) {
+			var src = "img/video/che_" + i + ".jpg";
+			srcArray.push(src);
+			carSrcArray.push(src);
+		};
+		
+		var carArray = [];
+		for(var i = 0; i < carSrcArray.length; i++) {
+			var newImage = new Image;
+			newImage.src = carSrcArray[i];
+			carArray.push(newImage);
+		}
+		
+		var indexRotate = 0;
+		var imgArray = [];
+		for (var i = 0;i < srcArray.length; i++) {
+			var newImage = new Image;
+			newImage.src = srcArray[i];
+			imgArray.push(newImage);
+			//遍历数组 进行预加载
+			newImage.onload = function(){
+				//每加载一个单位 进度条的偏移量
+				indexRotate += 1.2;
+				//指针的总共偏移
+				$(".loading_pointer").css("-webkit-transform","rotate(" + (indexRotate-140) + "deg)");
+				//百分比的进度变化
+				$(".firstPrecent").html(Math.floor(indexRotate / 2.8) + "%");
+				//判断图片加载完成
+				//console.log(srcArray.length);
+				if(Math.floor(indexRotate / 2.8) >= 99){
+					$(".firstContain").hide();
+					context.drawImage(carArray[0],0,0,canvas.width,canvas.height);
+				}
+			}
+		}
+		
+	</script>
+</html>
