@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>寻找房祖名</title>
+		<style type="text/css">
+			* { margin: 0; padding: 0; }
+			.box { position: relative; width: 400px; height: 550px; margin: 0 auto; background: #ccc;}
+			#time { position: absolute; top: 20px; left: 20px; font-size: 20px; }
+			#fraction { position: absolute; top: 20px; right: 20px; font-size: 20px; }
+			#btn { position: absolute; top: 60px; left: 50%; width: 50px; height: 40px; margin-left: -25px; border: 0; background: green; font-size: 20px; color: #fff; cursor: pointer; }
+			#loading { position: absolute; width: 100%; height: 100%; background: #000; text-align: center; font-size: 30px; color: #fff;}
+			#wrap { position: absolute; top: 150px; left: 15%; width: 70%; }
+			#wrap img { width: 100%; margin: 10px 0 0 10px; }
+		</style>
+	</head>
+	<body>
+		<div class="box"> 
+			<p id="time">剩余时间：60:00秒</p>
+			<p id="fraction">分数：0</p>
+			<input type="button" value="开始" id="btn" />
+			<div id="wrap"><!--房祖名们的父级-->
+				<img src="images/1.png" alt="" />
+			</div>
+			<div id="loading">loading.....</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		
+		function fandFzm() {
+			var loading = document.getElementById("loading");
+			var fraction = document.getElementById("fraction"); //分数
+			var btn = document.getElementById("btn");
+			var time = document.getElementById("time"); //游戏计时
+			var loadingIndex = 0; //图片加载的数量
+			var nowImgs = null; //当前图片数量
+			var multiple = 1; //倍数
+			var countdownTimer = null; //倒计时定时器
+			var countdownNum = 60; //游戏时间
+			var imgs = ["images/1.png","images/2.png"];
+			var colors = ["#339966","#0099FF","#6600FF","#993366","#FF3399","#FFCC99","#CCCC99","#66FFCC","#CC3300"]; 
+			//图片背景色
+
+			//随机函数
+			function rand(min,max) {
+				return parseInt(Math.random() * (max-min)) + min;
+			}
+
+			//loading界面
+			for (var i = 0; i < imgs.length; i++){
+				var imgObj = new Image();
+				
+				imgObj.onload=function (){
+					loadingIndex++;
+					if (loadingIndex >= imgs.length - 1){
+						loading.style.display = "none";
+					}
+				}
+				imgObj.src = imgs[i];
+			}
+
+			//游戏计时
+			function gameTime() {
+				countdownTimer = setInterval(function (){
+					countdownNum -= 0.1;
+					countdownNum = countdownNum.toFixed(2);
+					if (countdownNum <= 0){
+						alert("游戏结束！");
+						clearInterval(countdownTimer);
+					}
+					time.innerHTML = "剩余时间：" + countdownNum + "秒";
+				},100);
+			}
+			
+			//新增图片
+			function createImg() {
+				multiple++; //每进行到下一关，倍数+1，限制倍数最多到9
+				if (multiple >= 9){
+					multiple = 9;
+				}
+
+				fraction.innerHTML = "分数：" + (multiple-2); //减2是因为multiple初始值就是1，游戏开始时又加了1次
+
+				var imgNum = Math.pow(multiple, 2); //指数运算，multiple:底数，2:平方数，imgNum值代表每页的图片数
+				var imgWidth = (wrap.offsetWidth - multiple * 10) / multiple + "px"; 
+				//wrap的宽度减去margin，除以倍数，得出每行图片数的宽
+
+				colors.push(colors.shift()); //把背景色数组的第一项换到最后一项的位置
+	 
+				for (var i = 0; i < imgNum; i++){
+					var imgObj = document.createElement("img");
+					imgObj.src = "images/1.png";
+					imgObj.style.width = imgWidth;
+					imgObj.style.backgroundColor = colors[0];
+					wrap.appendChild(imgObj);
+				}
+				
+				//房祖名出现
+				appearFn(imgNum);
+			}
+
+
+			//清空图片
+			function removeFn() {
+				wrap.innerHTML = "";
+			}
+			
+			//房祖名出现
+			function appearFn(imgNum) {
+
+				btn.style.display = "none"; //隐藏开始按钮
+				var r = rand(0, imgNum);
+				
+				nowImgs = wrap.children;
+				nowImgs[r].src = "images/2.png";
+				nowImgs[r].onclick = function (){
+					removeFn();
+					createImg();
+				}
+			}
+
+			//开始游戏
+			btn.onclick = function () { 
+				gameTime();
+				removeFn();
+				createImg();
+			}
+		}
+		fandFzm();
+		
+	</script>
+</html>
