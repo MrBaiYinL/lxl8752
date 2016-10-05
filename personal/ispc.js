@@ -9,7 +9,7 @@ function deviceReady() {
 						break;				
 					}
 				}
-				return index;
+				return index;//
 			}	
 			if(IsPc()) {
 				var deviceArray = [375, 667];
